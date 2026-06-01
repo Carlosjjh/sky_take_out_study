@@ -9,6 +9,7 @@ import com.sky.sky_server.constant.MessageConstant;
 
 import com.sky.sky_server.exception.BusinessException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -28,7 +29,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new BusinessException(MessageConstant.ACCOUNT_NOT_FOUND);
         }
 
-        if (!employee.getPassword().equals(employeeLoginDTO.getPassword())) {
+        String password = DigestUtils.md5DigestAsHex(employeeLoginDTO.getPassword().getBytes());
+        if (!employee.getPassword().equals(password)) {
             throw new BusinessException(MessageConstant.PASSWORD_ERROR);
         }
 
