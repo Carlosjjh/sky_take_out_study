@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.sky.sky_server.utils.JwtUtil;
+import com.sky.sky_server.context.BaseContext;
 
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +26,8 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
         try {
             Claims claims = JwtUtil.parseJWT(secretkey, token);
             Long employeeId = Long.valueOf(claims.get("employeeId").toString());
+
+            BaseContext.setCurrentId(employeeId);
 
             log.info("JWT校验通过，当前员工id:{}", employeeId);
             return true;
