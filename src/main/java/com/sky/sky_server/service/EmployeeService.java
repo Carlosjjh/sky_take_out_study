@@ -5,6 +5,7 @@ import com.sky.sky_server.dto.EmployeeLoginDTO;
 import com.sky.sky_server.vo.EmployeeLoginVO;
 import com.sky.sky_server.dto.EmployeePageQueryDTO;
 import com.sky.sky_server.result.PageResult;
+import com.sky.sky_server.vo.EmployeePageVO;
 
 public interface EmployeeService {
 
@@ -14,4 +15,7 @@ public interface EmployeeService {
 
     PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
 
+    void startOrStop(Integer status, Long id);
+
+    EmployeePageVO getById(Long id);
 }
