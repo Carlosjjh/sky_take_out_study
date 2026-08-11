@@ -20,7 +20,8 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
     private String secretkey;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object hanler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        BaseContext.removeCurrentId();
         String token = request.getHeader("token");
 
         try {
@@ -36,6 +37,12 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
             response.setStatus(401);
             return false;
         }
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
+            Exception exception) {
+        BaseContext.removeCurrentId();
     }
 
 }
