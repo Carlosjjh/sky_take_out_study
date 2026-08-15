@@ -44,6 +44,7 @@ kubectl apply -f k8s/mysql.yaml
 kubectl -n sky-lab rollout status statefulset/mysql --timeout=5m
 
 kubectl apply -f k8s/sky-server.yaml
+kubectl -n sky-lab rollout restart deployment/sky-server
 kubectl -n sky-lab rollout status deployment/sky-server --timeout=5m
 
 echo
