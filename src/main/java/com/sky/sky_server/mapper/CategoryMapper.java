@@ -31,6 +31,9 @@ public interface CategoryMapper {
     })
     List<CategoryPageVO> pageQuery(CategoryPageQueryDTO categoryPageQueryDTO);
 
+    @Select("select id, type, name, sort, status, create_time, update_time from category where type = #{type} and status = 1 order by sort asc, id asc")
+    List<CategoryPageVO> listEnabledByType(Integer type);
+
     @Update("update category set status = #{status}, update_time = #{updateTime}, update_user = #{updateUser} where id = #{id}")
     int updateStatus(Integer status, Long id, LocalDateTime updateTime, Long updateUser);
 }

@@ -28,10 +28,16 @@ kubectl get service -n sky-lab
 curl http://127.0.0.1:30088/status
 ```
 
-From another computer, open the admin web console:
+From another computer, open the customer web:
 
 ```text
 http://SERVER_PUBLIC_IP:30088
+```
+
+The admin console is:
+
+```text
+http://SERVER_PUBLIC_IP:30088/manage.html
 ```
 
 The backend status endpoint is:

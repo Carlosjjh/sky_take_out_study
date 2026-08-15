@@ -14,6 +14,7 @@ import com.sky.sky_server.service.CategoryService;
 import com.sky.sky_server.vo.CategoryPageVO;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import java.util.List;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -49,5 +50,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void startOrStop(Integer status, Long id) {
         categoryMapper.updateStatus(status, id, LocalDateTime.now(), BaseContext.getCurrentId());
+    }
+
+    @Override
+    public List<CategoryPageVO> listEnabledByType(Integer type) {
+        return categoryMapper.listEnabledByType(type);
     }
 }

@@ -35,3 +35,36 @@ data:
         create_user BIGINT DEFAULT NULL,
         update_user BIGINT DEFAULT NULL
     );
+  03-dish.sql: |
+    CREATE TABLE IF NOT EXISTS dish (
+        id BIGINT PRIMARY KEY AUTO_INCREMENT,
+        name VARCHAR(32) NOT NULL,
+        category_id BIGINT NOT NULL,
+        price DECIMAL(10,2) NOT NULL,
+        image VARCHAR(512) DEFAULT NULL,
+        description VARCHAR(255) DEFAULT NULL,
+        status INT NOT NULL DEFAULT 1,
+        create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+        update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        create_user BIGINT DEFAULT NULL,
+        update_user BIGINT DEFAULT NULL
+    );
+  04-order.sql: |
+    CREATE TABLE IF NOT EXISTS customer_order (
+        id BIGINT PRIMARY KEY AUTO_INCREMENT,
+        customer_name VARCHAR(32) NOT NULL,
+        phone VARCHAR(11) NOT NULL,
+        address VARCHAR(128) NOT NULL,
+        amount DECIMAL(10,2) NOT NULL,
+        status INT NOT NULL DEFAULT 1,
+        order_time DATETIME NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS order_detail (
+        id BIGINT PRIMARY KEY AUTO_INCREMENT,
+        order_id BIGINT NOT NULL,
+        dish_id BIGINT NOT NULL,
+        name VARCHAR(32) NOT NULL,
+        number INT NOT NULL,
+        amount DECIMAL(10,2) NOT NULL
+    );

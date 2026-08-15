@@ -120,6 +120,7 @@ label input:focus, label select:focus, .filter-field input:focus, .filter-bar se
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; min-width: 720px; }
 th, td { padding: 17px 23px; color: #6d7b8b; border-bottom: 1px solid #edf0f2; font-size: 12px; text-align: left; white-space: nowrap; }
+.description-cell { max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
 th { color: #9aa5b2; background: #fbfcfd; font-size: 10px; font-weight: 700; letter-spacing: .08em; }
 tbody tr:hover { background: #fcfdfd; }
 .primary-cell { display: flex; align-items: center; gap: 10px; color: var(--ink); }
