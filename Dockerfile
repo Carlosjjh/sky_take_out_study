@@ -5,7 +5,8 @@ COPY pom.xml mvnw ./
 COPY .mvn .mvn
 COPY src src
 COPY simulator simulator
-RUN mvn -B -DskipTests package
+COPY docker/maven-settings.xml /root/.m2/settings.xml
+RUN mvn -B -s /root/.m2/settings.xml -DskipTests package
 
 FROM eclipse-temurin:17-jre-jammy
 

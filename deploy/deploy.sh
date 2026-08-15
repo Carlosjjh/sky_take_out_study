@@ -27,7 +27,7 @@ fi
 
 cd "$PROJECT_DIR"
 echo "Building ${IMAGE}..."
-docker build -t "$IMAGE" .
+docker build --network=host -t "$IMAGE" .
 
 echo "Importing application image into K3s containerd..."
 docker save "$IMAGE" | k3s ctr images import -
