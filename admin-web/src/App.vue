@@ -45,7 +45,7 @@ async function request(path, options = {}) {
   headers.set('Accept', 'application/json')
   if (options.body) headers.set('Content-Type', 'application/json')
   if (token.value) headers.set('token', token.value)
-  const requestBase = window.location.hostname === 'localhost' ? LOCAL_PROXY : normalizeBase(apiBase.value)
+  const requestBase = normalizeBase(apiBase.value) === DEFAULT_API ? LOCAL_PROXY : normalizeBase(apiBase.value)
   const response = await fetch(`${requestBase}${path}`, { ...options, headers })
   if (response.status === 401) {
     logout(false)

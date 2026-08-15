@@ -7,7 +7,7 @@ Run this directory on the Ubuntu server after cloning the `codex/minimal-sky-ser
 - K3s is running.
 - Docker is running.
 - K3s can pull public images through the configured mirror.
-- The cloud security group allows TCP 30088 only from the IPs that need access.
+- The cloud security group allows TCP 30080 and 30088 only from the IPs that need access.
 
 ## Deploy
 
@@ -28,7 +28,13 @@ kubectl get service -n sky-lab
 curl http://127.0.0.1:30088/status
 ```
 
-From another computer, use:
+From another computer, open the admin web console:
+
+```text
+http://SERVER_PUBLIC_IP:30080
+```
+
+The backend status endpoint is:
 
 ```text
 http://SERVER_PUBLIC_IP:30088/status

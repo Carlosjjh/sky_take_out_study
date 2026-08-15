@@ -3,6 +3,7 @@ set -euo pipefail
 
 IMAGE_TAG="${IMAGE_TAG:-0.1.0}"
 IMAGE="sky-server:${IMAGE_TAG}"
+WEB_IMAGE="sky-admin-web:${IMAGE_TAG}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
@@ -29,8 +30,12 @@ cd "$PROJECT_DIR"
 echo "Building ${IMAGE}..."
 docker build --network=host -t "$IMAGE" .
 
+echo "Building ${WEB_IMAGE}..."
+docker build --network=host -t "$WEB_IMAGE" ./admin-web
+
 echo "Importing application image into K3s containerd..."
 docker save "$IMAGE" | k3s ctr images import -
+docker save "$WEB_IMAGE" | k3s ctr images import -
 
 kubectl apply -f k8s/namespace.yaml
 kubectl -n sky-lab create secret generic sky-secrets \
@@ -46,6 +51,10 @@ kubectl -n sky-lab rollout status statefulset/mysql --timeout=5m
 kubectl apply -f k8s/sky-server.yaml
 kubectl -n sky-lab rollout status deployment/sky-server --timeout=5m
 
+kubectl apply -f k8s/admin-web.yaml
+kubectl -n sky-lab rollout status deployment/admin-web --timeout=5m
+
 echo
-echo "Deployment succeeded. Open the following URL after allowing TCP 30088 in the cloud security group:"
+echo "Deployment succeeded. Allow TCP 30080 and 30088 in the cloud security group."
+echo "Admin web: http://$(curl -fsS --max-time 5 ifconfig.me 2>/dev/null || echo '<SERVER_PUBLIC_IP>'):30080"
 echo "http://$(curl -fsS --max-time 5 ifconfig.me 2>/dev/null || echo '<SERVER_PUBLIC_IP>'):30088/status"
