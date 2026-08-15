@@ -4,7 +4,8 @@ import { computed, onMounted, reactive, ref } from 'vue'
 const DEFAULT_API = 'http://8.163.103.170:30088'
 const LOCAL_PROXY = '/api'
 const savedApi = localStorage.getItem('sky-api-base')
-const apiBase = ref(savedApi || import.meta.env.VITE_API_BASE || DEFAULT_API)
+const bundledApiBase = window.location.port === '30088' ? window.location.origin : DEFAULT_API
+const apiBase = ref(savedApi || import.meta.env.VITE_API_BASE || bundledApiBase)
 const token = ref(localStorage.getItem('sky-admin-token') || '')
 const currentUser = ref(localStorage.getItem('sky-admin-user') || 'admin')
 const activeView = ref('overview')
@@ -45,7 +46,8 @@ async function request(path, options = {}) {
   headers.set('Accept', 'application/json')
   if (options.body) headers.set('Content-Type', 'application/json')
   if (token.value) headers.set('token', token.value)
-  const requestBase = normalizeBase(apiBase.value) === DEFAULT_API ? LOCAL_PROXY : normalizeBase(apiBase.value)
+  const normalizedApiBase = normalizeBase(apiBase.value)
+  const requestBase = normalizedApiBase === window.location.origin ? '' : LOCAL_PROXY
   const response = await fetch(`${requestBase}${path}`, { ...options, headers })
   if (response.status === 401) {
     logout(false)
