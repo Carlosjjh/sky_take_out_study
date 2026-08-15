@@ -1,0 +1,100 @@
+openapi: 3.0.3
+info:
+  title: Sky Take Out Admin Employee API
+  version: 1.0.0
+  description: Admin employee management API for the Sky Take Out study project.
+servers:
+  - url: http://localhost:8088
+tags:
+  - name: Employee
+    description: Admin employee management.
+paths:
+  /admin/employee:
+    put:
+      tags:
+        - Employee
+      operationId: updateEmployee
+      summary: Update employee information
+      description: Updates basic employee information by employee id.
+      security:
+        - adminToken: []
+      parameters:
+        - name: token
+          in: header
+          required: true
+          description: Admin JWT token returned by the login API.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeUpdateRequest'
+            example:
+              id: 2
+              username: zhangsan
+              name: Zhang San
+              phone: "13800000001"
+              sex: "1"
+              idNumber: "110101199001010001"
+      responses:
+        '200':
+          description: Employee updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultString'
+              example:
+                code: 1
+                msg: success
+                data: update employee success
+        '401':
+          description: Missing or invalid admin token.
+components:
+  securitySchemes:
+    adminToken:
+      type: apiKey
+      in: header
+      name: token
+  schemas:
+    EmployeeUpdateRequest:
+      type: object
+      required:
+        - id
+        - username
+        - name
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Employee id.
+        username:
+          type: string
+          description: Login username.
+        name:
+          type: string
+          description: Employee display name.
+        phone:
+          type: string
+          description: Mobile phone number.
+        sex:
+          type: string
+          description: Gender flag used by the existing database table.
+        idNumber:
+          type: string
+          description: Identity card number.
+    ResultString:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: 1 means success, 0 means failure.
+        msg:
+          type: string
+          description: Response message.
+        data:
+          type: string
+          nullable: true
+          description: Response payload.

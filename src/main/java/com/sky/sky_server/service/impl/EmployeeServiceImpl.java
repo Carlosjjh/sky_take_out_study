@@ -72,6 +72,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void save(EmployeeDTO employeeDTO) {
+        if (employeeMapper.getByUsername(employeeDTO.getUsername()) != null) {
+            throw new BusinessException(MessageConstant.ALREADY_EXISTS);
+        }
+
         Employee employee = new Employee();
 
         employee.setUsername(employeeDTO.getUsername());
@@ -114,7 +118,35 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeePageVO getById(Long id) {
-        return employeeMapper.getById(id);
+        EmployeePageVO employee = employeeMapper.getById(id);
+        if (employee == null) {
+            throw new BusinessException("employee not found");
+        }
+        return employee;
+    }
+
+    @Override
+    public void update(EmployeeDTO employeeDTO) {
+        if (employeeDTO.getId() == null || employeeDTO.getId() <= 0) {
+            throw new BusinessException("employee id is required");
+        }
+        if (employeeMapper.getById(employeeDTO.getId()) == null) {
+            throw new BusinessException("employee not found");
+        }
+
+        Employee employee = new Employee();
+
+        employee.setId(employeeDTO.getId());
+        employee.setUsername(employeeDTO.getUsername());
+        employee.setName(employeeDTO.getName());
+        employee.setPhone(employeeDTO.getPhone());
+        employee.setSex(employeeDTO.getSex());
+        employee.setIdNumber(employeeDTO.getIdNumber());
+
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+
+        employeeMapper.update(employee);
     }
 
 }

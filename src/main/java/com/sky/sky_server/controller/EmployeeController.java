@@ -11,15 +11,23 @@ import com.sky.sky_server.result.PageResult;
 import com.sky.sky_server.vo.EmployeePageVO;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.annotation.Validated;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 
 @RestController
 @RequestMapping("/admin/employee")
+@Validated
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -29,7 +37,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/login")
-    public Result<EmployeeLoginVO> login(@RequestBody EmployeeLoginDTO employeeLoginDTO) {
+    public Result<EmployeeLoginVO> login(@Valid @RequestBody EmployeeLoginDTO employeeLoginDTO) {
         EmployeeLoginVO employeeLoginVO = employeeService.login(employeeLoginDTO);
         return Result.success(employeeLoginVO);
     }
@@ -42,26 +50,33 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public Result<String> save(@RequestBody EmployeeDTO employeeDTO) {
+    public Result<String> save(@Valid @RequestBody EmployeeDTO employeeDTO) {
         employeeService.save(employeeDTO);
         return Result.success("save employee success");
     }
 
     @GetMapping("/page")
-    public Result<PageResult> page(EmployeePageQueryDTO employeePageQueryDTO) {
+    public Result<PageResult> page(@Valid EmployeePageQueryDTO employeePageQueryDTO) {
         PageResult pageResult = employeeService.pageQuery(employeePageQueryDTO);
         return Result.success(pageResult);
     }
 
     @PostMapping("/status/{status}")
-    public Result<String> startOrStop(@PathVariable Integer status, @RequestParam Long id) {
+    public Result<String> startOrStop(@PathVariable @Min(0) @Max(1) Integer status,
+            @RequestParam @Positive Long id) {
         employeeService.startOrStop(status, id);
         return Result.success("update employee status success");
     }
 
     @GetMapping("/{id}")
-    public Result<EmployeePageVO> getById(@PathVariable Long id) {
+    public Result<EmployeePageVO> getById(@PathVariable @Positive Long id) {
         EmployeePageVO employeePageVO = employeeService.getById(id);
         return Result.success(employeePageVO);
+    }
+
+    @PutMapping
+    public Result<String> update(@Valid @RequestBody EmployeeDTO employeeDTO) {
+        employeeService.update(employeeDTO);
+        return Result.success("update employee success");
     }
 }

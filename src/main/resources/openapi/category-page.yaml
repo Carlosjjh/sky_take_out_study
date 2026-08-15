@@ -1,0 +1,130 @@
+openapi: 3.0.3
+info:
+  title: Sky Take Out Category Page API
+  version: 1.0.0
+  description: Admin category pagination API for the Sky Take Out study project.
+servers:
+  - url: http://localhost:8088
+tags:
+  - name: Category
+    description: Admin category management.
+paths:
+  /admin/category/page:
+    get:
+      tags:
+        - Category
+      operationId: pageQueryCategory
+      summary: Query categories by page
+      security:
+        - adminToken: []
+      parameters:
+        - name: token
+          in: header
+          required: true
+          description: Admin JWT token returned by the login API.
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: true
+          description: Page number, starting at 1.
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+        - name: pageSize
+          in: query
+          required: true
+          description: Maximum number of records in a page.
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+        - name: name
+          in: query
+          required: false
+          description: Optional category name keyword.
+          schema:
+            type: string
+        - name: type
+          in: query
+          required: false
+          description: Optional category type. 1 is dish and 2 is set-meal.
+          schema:
+            type: integer
+            format: int32
+            enum: [1, 2]
+      responses:
+        '200':
+          description: Category page returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultCategoryPage'
+        '401':
+          description: Missing or invalid admin token.
+components:
+  securitySchemes:
+    adminToken:
+      type: apiKey
+      in: header
+      name: token
+  schemas:
+    CategoryPageRecord:
+      type: object
+      required:
+        - id
+        - type
+        - name
+        - sort
+        - status
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: integer
+          format: int32
+          enum: [1, 2]
+        name:
+          type: string
+        sort:
+          type: integer
+          format: int32
+        status:
+          type: integer
+          format: int32
+          enum: [0, 1]
+        createTime:
+          type: string
+          format: date-time
+        updateTime:
+          type: string
+          format: date-time
+    CategoryPage:
+      type: object
+      required:
+        - total
+        - records
+      properties:
+        total:
+          type: integer
+          format: int64
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryPageRecord'
+    ResultCategoryPage:
+      type: object
+      required:
+        - code
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: 1 means success and 0 means failure.
+        msg:
+          type: string
+          nullable: true
+        data:
+          $ref: '#/components/schemas/CategoryPage'

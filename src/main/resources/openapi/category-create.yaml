@@ -1,0 +1,57 @@
+openapi: 3.0.3
+info:
+  title: Sky Take Out Category API
+  version: 1.0.0
+  description: Admin category management API for the Sky Take Out study project.
+paths:
+  /admin/category:
+    post:
+      tags:
+        - Category
+      operationId: createCategory
+      summary: Create a dish or set-meal category
+      security:
+        - adminToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryCreateRequest'
+            example:
+              name: Hot dishes
+              type: 1
+              sort: 10
+      responses:
+        '200':
+          description: Category created successfully.
+        '401':
+          description: Missing or invalid admin token.
+components:
+  securitySchemes:
+    adminToken:
+      type: apiKey
+      in: header
+      name: token
+  schemas:
+    CategoryCreateRequest:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 32
+          description: Category name.
+        type:
+          type: integer
+          format: int32
+          enum: [1, 2]
+          description: 1 for dish categories and 2 for set-meal categories.
+        sort:
+          type: integer
+          format: int32
+          minimum: 0
+          description: Display order. A smaller value appears first.
